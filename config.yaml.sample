@@ -1,0 +1,22 @@
+routes:
+  # example: http://127.0.0.1/test?q=my search query
+  - endpoint: /test
+    method: get
+    proxy:
+      url: https://google.com/search
+      method: get
+      payload:
+        q: "{{ search }}"
+
+  - endpoint: /uptime-kuma
+    method: get
+    proxy:
+      url: https://my-alert-endpoint.com
+      method: get
+      payload:
+        token: my-secret-token
+        summary: "{{ monitor.name }}"
+        details: "{{ msg }}\n\nhttps://my-uptime-kuma.com/dashboard/{{ monitor.id }}"
+        action: "{{ 'close' if heartbeat.status else '' }}"
+        dedup: "monitor-{{ monitor.id }}"
+      options: {}
