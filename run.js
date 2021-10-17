@@ -5,7 +5,7 @@ const yaml = require('yaml')
 const fs = require('fs')
 const nunjucks = require('nunjucks')
 
-nunjucks.configure({ autoescape: true });
+nunjucks.configure({ autoescape: true })
 
 const app = express()
 const port = 3000
@@ -14,39 +14,43 @@ app.use(express.json())
 app.use(morgan('combined'))
 
 const configFile = process.argv[2] || './config.yaml'
-
 const config = yaml.parse(fs.readFileSync(configFile, 'utf8'))
 
 for (let route of config.routes) {
-  app[route.method](route.endpoint, async (req, res) => {
+  app[route.method.toLowerCase()](route.endpoint, async (req, res) => {
     const { query, body, params } = req
-    const payload = nunjucks.renderString(yaml.stringify(route.proxy.payload), {
-      ...(query && query),
-      ...(params && params),
-      ...(body && body),
-    })
 
-    console.log(yaml.parse(payload))
+    const payload = yaml.parse(
+      nunjucks.renderString(yaml.stringify(route.proxy.payload), {
+        ...(query && query),
+        ...(params && params),
+        ...(body && body),
+        ...process.env,
+      })
+    )
+
+    console.log(payload)
 
     let proxyOpts = route.proxy.options || {}
     // @TODO: add support for form data??
-    switch (route.proxy.method) {
+    switch (route.proxy.method.toLowerCase()) {
       case 'post':
-        proxyOpts.json = yaml.parse(payload)
+        proxyOpts.json = payload
         break
       default:
-        proxyOpts.searchParams = yaml.parse(payload)
+        proxyOpts.searchParams = payload
         break
     }
 
+    let response = null
     try {
-      const response = await got[route.proxy.method](route.proxy.url, proxyOpts)
-      res.statusCode = response.statusCode
-      res.send(response.body)
+      response = await got[route.proxy.method.toLowerCase()](route.proxy.url, proxyOpts)
     } catch (err) {
-      res.statusCode = err.response.statusCode
-      res.send(err.response.body)
+      response = err.response
     }
+
+    res.statusCode = response.statusCode
+    res.send(response.body)
   })
 }
 
