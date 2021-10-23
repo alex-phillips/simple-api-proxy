@@ -20,16 +20,21 @@ for (let route of config.routes) {
   app[route.method.toLowerCase()](route.endpoint, async (req, res) => {
     const { query, body, params } = req
 
+    const payloadVariables = {
+      ...(query && query),
+      ...(params && params),
+      ...(body && body),
+      ...process.env,
+    }
+
     const payload = yaml.parse(
-      nunjucks.renderString(yaml.stringify(route.proxy.payload), {
-        ...(query && query),
-        ...(params && params),
-        ...(body && body),
-        ...process.env,
-      })
+      nunjucks.renderString(yaml.stringify(route.proxy.payload), payloadVariables)
     )
 
-    console.log(payload)
+    if (route.debug) {
+      console.log(`Available variables: ${JSON.stringify(payloadVariables)}`)
+      console.log(`Rendered payload: ${JSON.stringify(payload)}`)
+    }
 
     let proxyOpts = route.proxy.options || {}
     // @TODO: add support for form data??
