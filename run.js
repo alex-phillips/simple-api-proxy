@@ -38,7 +38,7 @@ for (let route of config.routes) {
 
     let proxyOpts = route.proxy.options || {}
     // @TODO: add support for form data??
-    switch (route.proxy.method.toLowerCase()) {
+    switch ((route.proxy.method || 'get').toLowerCase()) {
       case 'post':
         proxyOpts.json = payload
         break
