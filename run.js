@@ -8,7 +8,7 @@ const nunjucks = require('nunjucks')
 nunjucks.configure({ autoescape: true })
 
 const app = express()
-const port = 3000
+const port = process.env.API_PROXY_PORT || 3000
 
 app.use(express.json())
 app.use(morgan('combined'))
