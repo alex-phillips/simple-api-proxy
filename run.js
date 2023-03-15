@@ -28,7 +28,7 @@ for (let route of config.routes) {
     }
 
     const payload = yaml.parse(
-      nunjucks.renderString(yaml.stringify(route.proxy.payload), payloadVariables)
+      nunjucks.renderString(yaml.stringify(route.proxy.payload || {}), payloadVariables)
     )
 
     if (route.debug) {
