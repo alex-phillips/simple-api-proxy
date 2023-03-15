@@ -1,9 +1,9 @@
-const express = require('express')
-const got = require('got')
-const morgan = require('morgan')
-const yaml = require('yaml')
-const fs = require('fs')
-const nunjucks = require('nunjucks')
+import express from 'express'
+import got from 'got'
+import morgan from 'morgan'
+import yaml from 'yaml'
+import fs from 'fs'
+import nunjucks from 'nunjucks'
 
 nunjucks.configure({ autoescape: true })
 

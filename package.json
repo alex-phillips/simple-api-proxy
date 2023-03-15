@@ -1,19 +1,10 @@
 {
-  "name": "notification-gateway",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+	"type":"module",
   "dependencies": {
-    "express": "^4.17.1",
-    "got": "^11.8.2",
+    "express": "^4.18.2",
+    "got": "^12.6.0",
     "morgan": "^1.10.0",
     "nunjucks": "^3.2.3",
-    "yaml": "^1.10.2"
+    "yaml": "^2.2.1"
   }
 }
